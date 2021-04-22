@@ -11,17 +11,23 @@ const SortArrow = ({isAscending, size}) => {
 const EmTable = ({filter}) => {
     const [initialEmployees, setInitialEmployees] = useState([]);
     const [sortName, setSortName] = useState('ascend');
-
-    const getEmployees = async () => {
-        const users = API.getAllUsers();
+    
+    let getEmployees = async () => {
+        let users = await API.getAllUsers();
         setInitialEmployees(users);
     };
 
     useEffect(() => {
         getEmployees()
     }, []);
-
+    
     const fullName = employee => `${employee.name.first} ${employee.name.last}`;
+
+
+    let employees = initialEmployees.filter((employee) => {
+        const name = fullName(employee).toLowerCase()
+        return name.startsWith(filter.toLowerCase())
+    });
 
     const sortToggle = () => {
         if (sortName === 'ascend') {
@@ -31,11 +37,11 @@ const EmTable = ({filter}) => {
         }
     };
 
-    const employees = initialEmployees.filter(employee => fullName(employee).toLowerCase().startsWith(filter.toLowerCase()))
+    
 
     return (
         <>
-        <Table  striped bordered hover className='table'>
+        <Table  striped bordered hover className='table ml-3'>
             <thead>
                 <tr>
                     <th>Photo</th>
